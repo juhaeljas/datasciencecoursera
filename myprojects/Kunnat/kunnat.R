@@ -1,0 +1,140 @@
+setwd("C:/Users/Jussi/Documents/datasciencecoursera/myprojects/Kunnat")
+
+asukkaat<-read.csv(file="asukasluvut.txt",encoding="UTF-8", header=FALSE)
+colnames(asukkaat)<-c("Kunta","asukasluku")
+pintaalat<-read.csv(file="mml_vuositilasto_2014.csv",encoding="UTF-8")
+
+levels(asukkaat$Kunta) <- c(levels(asukkaat$Kunta), "Koski Tl")
+asukkaat[asukkaat$Kunta=="KoskiTl",1]<-"Koski Tl"
+
+levels(pintaalat$Kunta) <- c(levels(pintaalat$Kunta), "Pedersören kunta")
+pintaalat[pintaalat$Kunta=="Pedersöre",1]<-"Pedersören kunta"
+
+levels(asukkaat$Kunta) <- c(levels(asukkaat$Kunta), "Mariehamn")
+asukkaat[asukkaat$Kunta=="Maarianhamina",1]<-"Mariehamn"
+
+levels(pintaalat$Kunta) <- c(levels(pintaalat$Kunta), "Inkoo")
+pintaalat[pintaalat$Kunta=="Ingå",1]<-"Inkoo"
+
+levels(pintaalat$Kunta) <- c(levels(pintaalat$Kunta), "Pietarsaari")
+pintaalat[pintaalat$Kunta=="Jakobstad",1]<-"Pietarsaari"
+
+levels(asukkaat$Kunta) <- c(levels(asukkaat$Kunta), "Pedersören kunta")
+asukkaat[asukkaat$Kunta=="Pedersörenkunta",1]<-"Pedersören kunta"
+
+kuntatiedot <- merge(asukkaat,pintaalat,by="Kunta", all=TRUE)
+kuntatiedot[,5]<-as.vector(kuntatiedot[,5])
+kuntatiedot[kuntatiedot$Kunta=="Parainen",5]<-"4658.28"
+
+kuntatiedot[,5]<-as.numeric(kuntatiedot[,5])
+kuntatiedot[,4]<-as.numeric(kuntatiedot[,4])
+kuntatiedot[,3]<-as.numeric(kuntatiedot[,3])
+kuntatiedot[,2]<-as.numeric(kuntatiedot[,2])
+kuntatiedot[,1]<-as.character(kuntatiedot[,1])
+
+
+kuntatiedot[kuntatiedot$Kunta=="Hollola",3]<-kuntatiedot[kuntatiedot$Kunta=="Hollola",3] + kuntatiedot[kuntatiedot$Kunta=="Hämeenkoski",3]
+kuntatiedot[kuntatiedot$Kunta=="Hollola",4]<-kuntatiedot[kuntatiedot$Kunta=="Hollola",4] + kuntatiedot[kuntatiedot$Kunta=="Hämeenkoski",4]
+kuntatiedot[kuntatiedot$Kunta=="Hollola",5]<-kuntatiedot[kuntatiedot$Kunta=="Hollola",5] + kuntatiedot[kuntatiedot$Kunta=="Hämeenkoski",5]
+kuntatiedot[kuntatiedot$Kunta=="Hollola",6]<-kuntatiedot[kuntatiedot$Kunta=="Hollola",6] + kuntatiedot[kuntatiedot$Kunta=="Hämeenkoski",6]
+
+kuntatiedot[kuntatiedot$Kunta=="Kurikka",3]<-kuntatiedot[kuntatiedot$Kunta=="Kurikka",3] + kuntatiedot[kuntatiedot$Kunta=="Jalasjärvi",3]
+kuntatiedot[kuntatiedot$Kunta=="Kurikka",4]<-kuntatiedot[kuntatiedot$Kunta=="Kurikka",4] + kuntatiedot[kuntatiedot$Kunta=="Jalasjärvi",4]
+kuntatiedot[kuntatiedot$Kunta=="Kurikka",5]<-kuntatiedot[kuntatiedot$Kunta=="Kurikka",5] + kuntatiedot[kuntatiedot$Kunta=="Jalasjärvi",5]
+kuntatiedot[kuntatiedot$Kunta=="Kurikka",6]<-kuntatiedot[kuntatiedot$Kunta=="Kurikka",6] + kuntatiedot[kuntatiedot$Kunta=="Jalasjärvi",6]
+
+kuntatiedot[kuntatiedot$Kunta=="Kemiönsaari",3]<-kuntatiedot[kuntatiedot$Kunta=="Kemiönsaari",3] + kuntatiedot[kuntatiedot$Kunta=="Kimitoön",3]
+kuntatiedot[kuntatiedot$Kunta=="Kemiönsaari",4]<-kuntatiedot[kuntatiedot$Kunta=="Kemiönsaari",4] + kuntatiedot[kuntatiedot$Kunta=="Kimitoön",4]
+kuntatiedot[kuntatiedot$Kunta=="Kemiönsaari",5]<-kuntatiedot[kuntatiedot$Kunta=="Kemiönsaari",5] + kuntatiedot[kuntatiedot$Kunta=="Kimitoön",5]
+kuntatiedot[kuntatiedot$Kunta=="Kemiönsaari",6]<-kuntatiedot[kuntatiedot$Kunta=="Kemiönsaari",6] + kuntatiedot[kuntatiedot$Kunta=="Kimitoön",6]
+
+kuntatiedot[kuntatiedot$Kunta=="Kemiönsaari",3]<-kuntatiedot[kuntatiedot$Kunta=="Kimitoön",3]
+kuntatiedot[kuntatiedot$Kunta=="Kemiönsaari",4]<-kuntatiedot[kuntatiedot$Kunta=="Kimitoön",4]
+kuntatiedot[kuntatiedot$Kunta=="Kemiönsaari",5]<-kuntatiedot[kuntatiedot$Kunta=="Kimitoön",5]
+kuntatiedot[kuntatiedot$Kunta=="Kemiönsaari",6]<-kuntatiedot[kuntatiedot$Kunta=="Kimitoön",6]
+
+kuntatiedot[kuntatiedot$Kunta=="Mustasaari",3]<-kuntatiedot[kuntatiedot$Kunta=="Korsholm",3]
+kuntatiedot[kuntatiedot$Kunta=="Mustasaari",4]<-kuntatiedot[kuntatiedot$Kunta=="Korsholm",4]
+kuntatiedot[kuntatiedot$Kunta=="Mustasaari",5]<-kuntatiedot[kuntatiedot$Kunta=="Korsholm",5]
+kuntatiedot[kuntatiedot$Kunta=="Mustasaari",6]<-kuntatiedot[kuntatiedot$Kunta=="Korsholm",6]
+
+kuntatiedot[kuntatiedot$Kunta=="Säkylä",3]<-kuntatiedot[kuntatiedot$Kunta=="Säkylä",3] + kuntatiedot[kuntatiedot$Kunta=="Köyliö",3]
+kuntatiedot[kuntatiedot$Kunta=="Säkylä",4]<-kuntatiedot[kuntatiedot$Kunta=="Säkylä",4] + kuntatiedot[kuntatiedot$Kunta=="Köyliö",4]
+kuntatiedot[kuntatiedot$Kunta=="Säkylä",5]<-kuntatiedot[kuntatiedot$Kunta=="Säkylä",5] + kuntatiedot[kuntatiedot$Kunta=="Köyliö",5]
+kuntatiedot[kuntatiedot$Kunta=="Säkylä",6]<-kuntatiedot[kuntatiedot$Kunta=="Säkylä",6] + kuntatiedot[kuntatiedot$Kunta=="Köyliö",6]
+
+kuntatiedot[kuntatiedot$Kunta=="Kristiinankaupunki",3]<-kuntatiedot[kuntatiedot$Kunta=="Kristinestad",3]
+kuntatiedot[kuntatiedot$Kunta=="Kristiinankaupunki",5]<-kuntatiedot[kuntatiedot$Kunta=="Kristinestad",5]
+kuntatiedot[kuntatiedot$Kunta=="Kristiinankaupunki",4]<-kuntatiedot[kuntatiedot$Kunta=="Kristinestad",4]
+kuntatiedot[kuntatiedot$Kunta=="Kristiinankaupunki",6]<-kuntatiedot[kuntatiedot$Kunta=="Kristinestad",6]
+
+kuntatiedot[kuntatiedot$Kunta=="Kruunupyy",3]<-kuntatiedot[kuntatiedot$Kunta=="Kronoby",3]
+kuntatiedot[kuntatiedot$Kunta=="Kruunupyy",4]<-kuntatiedot[kuntatiedot$Kunta=="Kronoby",4]
+kuntatiedot[kuntatiedot$Kunta=="Kruunupyy",5]<-kuntatiedot[kuntatiedot$Kunta=="Kronoby",5]
+kuntatiedot[kuntatiedot$Kunta=="Kruunupyy",6]<-kuntatiedot[kuntatiedot$Kunta=="Kronoby",6]
+
+kuntatiedot[kuntatiedot$Kunta=="Kruunupyy",3]<-kuntatiedot[kuntatiedot$Kunta=="Kronoby ",3]
+kuntatiedot[kuntatiedot$Kunta=="Kruunupyy",4]<-kuntatiedot[kuntatiedot$Kunta=="Kronoby ",4]
+kuntatiedot[kuntatiedot$Kunta=="Kruunupyy",5]<-kuntatiedot[kuntatiedot$Kunta=="Kronoby ",5]
+kuntatiedot[kuntatiedot$Kunta=="Kruunupyy",6]<-kuntatiedot[kuntatiedot$Kunta=="Kronoby ",6]
+
+kuntatiedot[kuntatiedot$Kunta=="Luoto",3]<-kuntatiedot[kuntatiedot$Kunta=="Larsmo",3]
+kuntatiedot[kuntatiedot$Kunta=="Luoto",4]<-kuntatiedot[kuntatiedot$Kunta=="Larsmo",4]
+kuntatiedot[kuntatiedot$Kunta=="Luoto",5]<-kuntatiedot[kuntatiedot$Kunta=="Larsmo",5]
+kuntatiedot[kuntatiedot$Kunta=="Luoto",6]<-kuntatiedot[kuntatiedot$Kunta=="Larsmo",6]
+
+kkunta="Maalahti"
+rkunta="Malax"
+kuntatiedot[kuntatiedot$Kunta==kkunta,3]<-kuntatiedot[kuntatiedot$Kunta==rkunta,3]
+kuntatiedot[kuntatiedot$Kunta==kkunta,4]<-kuntatiedot[kuntatiedot$Kunta==rkunta,4]
+kuntatiedot[kuntatiedot$Kunta==kkunta,5]<-kuntatiedot[kuntatiedot$Kunta==rkunta,5]
+kuntatiedot[kuntatiedot$Kunta==kkunta,6]<-kuntatiedot[kuntatiedot$Kunta==rkunta,6]
+
+kkunta="Maarianhamina"
+rkunta="Mariehamn"
+kuntatiedot[kuntatiedot$Kunta==kkunta,3]<-kuntatiedot[kuntatiedot$Kunta==rkunta,3]
+kuntatiedot[kuntatiedot$Kunta==kkunta,4]<-kuntatiedot[kuntatiedot$Kunta==rkunta,4]
+kuntatiedot[kuntatiedot$Kunta==kkunta,5]<-kuntatiedot[kuntatiedot$Kunta==rkunta,5]
+kuntatiedot[kuntatiedot$Kunta==kkunta,6]<-kuntatiedot[kuntatiedot$Kunta==rkunta,6]
+
+kkunta="Myrskylä"
+rkunta="Myrskylä "
+kuntatiedot[kuntatiedot$Kunta==kkunta,3]<-kuntatiedot[kuntatiedot$Kunta==rkunta,3]
+kuntatiedot[kuntatiedot$Kunta==kkunta,4]<-kuntatiedot[kuntatiedot$Kunta==rkunta,4]
+kuntatiedot[kuntatiedot$Kunta==kkunta,5]<-kuntatiedot[kuntatiedot$Kunta==rkunta,5]
+kuntatiedot[kuntatiedot$Kunta==kkunta,6]<-kuntatiedot[kuntatiedot$Kunta==rkunta,6]
+
+kkunta="Närpiö"
+rkunta="Närpes"
+kuntatiedot[kuntatiedot$Kunta==kkunta,3]<-kuntatiedot[kuntatiedot$Kunta==rkunta,3]
+kuntatiedot[kuntatiedot$Kunta==kkunta,4]<-kuntatiedot[kuntatiedot$Kunta==rkunta,4]
+kuntatiedot[kuntatiedot$Kunta==kkunta,5]<-kuntatiedot[kuntatiedot$Kunta==rkunta,5]
+kuntatiedot[kuntatiedot$Kunta==kkunta,6]<-kuntatiedot[kuntatiedot$Kunta==rkunta,6]
+
+kkunta="Lahti"
+rkunta="Nastola"
+kuntatiedot[kuntatiedot$Kunta==kkunta,4]<-kuntatiedot[kuntatiedot$Kunta==kkunta,4]+kuntatiedot[kuntatiedot$Kunta==rkunta,4]
+kuntatiedot[kuntatiedot$Kunta==kkunta,5]<-kuntatiedot[kuntatiedot$Kunta==kkunta,5]+kuntatiedot[kuntatiedot$Kunta==rkunta,5]
+kuntatiedot[kuntatiedot$Kunta==kkunta,6]<-kuntatiedot[kuntatiedot$Kunta==kkunta,6]+kuntatiedot[kuntatiedot$Kunta==rkunta,6]
+
+kkunta="Uusikaarlepyy"
+rkunta="Nykarleby"
+kuntatiedot[kuntatiedot$Kunta==kkunta,3]<-kuntatiedot[kuntatiedot$Kunta==rkunta,3]
+kuntatiedot[kuntatiedot$Kunta==kkunta,4]<-kuntatiedot[kuntatiedot$Kunta==rkunta,4]
+kuntatiedot[kuntatiedot$Kunta==kkunta,5]<-kuntatiedot[kuntatiedot$Kunta==rkunta,5]
+kuntatiedot[kuntatiedot$Kunta==kkunta,6]<-kuntatiedot[kuntatiedot$Kunta==rkunta,6]
+
+kkunta="Raasepori"
+rkunta="Raseborg"
+kuntatiedot[kuntatiedot$Kunta==kkunta,3]<-kuntatiedot[kuntatiedot$Kunta==rkunta,3]
+kuntatiedot[kuntatiedot$Kunta==kkunta,4]<-kuntatiedot[kuntatiedot$Kunta==rkunta,4]
+kuntatiedot[kuntatiedot$Kunta==kkunta,5]<-kuntatiedot[kuntatiedot$Kunta==rkunta,5]
+kuntatiedot[kuntatiedot$Kunta==kkunta,6]<-kuntatiedot[kuntatiedot$Kunta==rkunta,6]
+
+kuntatiedot<-kuntatiedot[-c(314:327),]
+kuntatiedot[kuntatiedot$Kunta=="Säkylä",5]<-0
+kuntatiedot[kuntatiedot$Kunta=="Hollola",5]<-0
+kuntatiedot[kuntatiedot$Kunta=="Kurikka",5]<-0
+kuntatiedot[kuntatiedot$Kunta=="Lahti",5]<-0
+
+kuntatiedot<-kuntatiedot[order(kuntatiedot$asukasluku),]
