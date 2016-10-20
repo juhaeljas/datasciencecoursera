@@ -3,7 +3,7 @@
 #   
 #   First check that when you use the function make_Vector now you have of four different setting
 
-mvec <- makeVector()
+mvec <- makeVector(x)
 x <- 1:4
 mvec$set(x)
 mvec$get()
@@ -29,9 +29,9 @@ cachemean <- function(x, ...) {
         x$setmean(m)
         m
 }
+
 # These part or code check if you have the mean of the vector of interest. If these exist then you don't need calculate and you can use the cache variable.
 # 
 # ￼ I put a wrong number for the mean, then you can see that already I set the mean value as follow:
-  
-cachemean(m)
+cachemean(mvec)  
 # 3.4
