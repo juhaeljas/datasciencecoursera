@@ -1,0 +1,9 @@
+{
+	"name": "juhas-ctoigniteADF",
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "c5a1d267-b7d9-4099-b8d8-e83f321cdf48",
+		"tenantId": "503306e2-3ab7-46ea-bc76-035d89943458"
+	}
+}
