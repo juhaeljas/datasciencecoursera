@@ -18,7 +18,7 @@
 						"referenceName": "MovieSink",
 						"type": "DatasetReference"
 					},
-					"name": "Sink"
+					"name": "MovieSink"
 				}
 			],
 			"transformations": [
@@ -36,6 +36,9 @@
 				},
 				{
 					"name": "AggregateRatings"
+				},
+				{
+					"name": "UpsertIfTrue"
 				}
 			],
 			"scriptLines": [
@@ -68,17 +71,20 @@
 				"     skipDuplicateMapOutputs: true) ~> select2",
 				"RankMoviesByRating aggregate(groupBy(PrimaryGenre,",
 				"          year),",
-				"     AverageRating = ERROR_FUNCTION('avg(toInteger({Rotten Tomato})'),",
+				"     AverageRating = avg(toInteger({Rotten Tomato})),",
 				"          HighestRated = first(title),",
 				"          LowestRated = last(title),",
 				"          NumberOfMovies = count()) ~> AggregateRatings",
-				"AggregateRatings sink(allowSchemaDrift: true,",
+				"AggregateRatings alterRow(updateIf(true())) ~> UpsertIfTrue",
+				"UpsertIfTrue sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     umask: 0022,",
+				"     partitionFileNames:['sinkdb.csv'],",
+				"     umask: 0777,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> Sink"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> MovieSink"
 			]
 		}
 	}
