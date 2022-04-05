@@ -33,6 +33,9 @@
 				},
 				{
 					"name": "select2"
+				},
+				{
+					"name": "AggregateRatings"
 				}
 			],
 			"scriptLines": [
@@ -51,7 +54,8 @@
 				"FilterYears derive(PrimaryGenre = iif(locate(\"|\", genres) > 1, left(genres, locate(\"|\", genres)-1), genres)) ~> DerivedPrimaryGenre",
 				"DerivedPrimaryGenre window(over(PrimaryGenre,",
 				"          year),",
-				"     asc({Rotten Tomato}, true)) ~> RankMoviesByRating",
+				"     desc({Rotten Tomato}, true),",
+				"     RatingsRank = rank()) ~> RankMoviesByRating",
 				"MoviesDb select(mapColumn(",
 				"          movie,",
 				"          title,",
@@ -62,7 +66,13 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select2",
-				"RankMoviesByRating sink(allowSchemaDrift: true,",
+				"RankMoviesByRating aggregate(groupBy(PrimaryGenre,",
+				"          year),",
+				"     AverageRating = ERROR_FUNCTION('avg(toInteger({Rotten Tomato})'),",
+				"          HighestRated = first(title),",
+				"          LowestRated = last(title),",
+				"          NumberOfMovies = count()) ~> AggregateRatings",
+				"AggregateRatings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
 				"     preCommands: [],",
