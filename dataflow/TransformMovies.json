@@ -26,10 +26,13 @@
 					"name": "FilterYears"
 				},
 				{
-					"name": "AggregateComedyRatings"
+					"name": "DerivedPrimaryGenre"
 				},
 				{
-					"name": "select1"
+					"name": "RankMoviesByRating"
+				},
+				{
+					"name": "select2"
 				}
 			],
 			"scriptLines": [
@@ -44,9 +47,11 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> MoviesDb",
-				"select1 filter(toInteger(year) >= 1910 && toInteger(year) <= 2000 && rlike(genres, 'Comedy')) ~> FilterYears",
-				"FilterYears aggregate(groupBy(year),",
-				"     AverageComedyRating = avg(toInteger(Rating))) ~> AggregateComedyRatings",
+				"select2 filter(toInteger(year) > 1950) ~> FilterYears",
+				"FilterYears derive(PrimaryGenre = iif(locate(\"|\", genres) > 1, left(genres, locate(\"|\", genres)-1), genres)) ~> DerivedPrimaryGenre",
+				"DerivedPrimaryGenre window(over(PrimaryGenre,",
+				"          year),",
+				"     asc({Rotten Tomato}, true)) ~> RankMoviesByRating",
 				"MoviesDb select(mapColumn(",
 				"          movie,",
 				"          title,",
@@ -56,8 +61,8 @@
 				"          {Rotten Tomato} = {Rotton Tomato}",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1",
-				"AggregateComedyRatings sink(allowSchemaDrift: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"RankMoviesByRating sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
 				"     preCommands: [],",
