@@ -27,6 +27,9 @@
 				},
 				{
 					"name": "AggregateComedyRatings"
+				},
+				{
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -41,9 +44,19 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> MoviesDb",
-				"MoviesDb filter(toInteger(year) >= 1910 && toInteger(year) <= 2000 && rlike(genres, 'Comedy')) ~> FilterYears",
+				"select1 filter(toInteger(year) >= 1910 && toInteger(year) <= 2000 && rlike(genres, 'Comedy')) ~> FilterYears",
 				"FilterYears aggregate(groupBy(year),",
 				"     AverageComedyRating = avg(toInteger(Rating))) ~> AggregateComedyRatings",
+				"MoviesDb select(mapColumn(",
+				"          movie,",
+				"          title,",
+				"          genres,",
+				"          year,",
+				"          Rating,",
+				"          {Rotten Tomato} = {Rotton Tomato}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
 				"AggregateComedyRatings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
