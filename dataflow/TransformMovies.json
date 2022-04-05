@@ -6,18 +6,51 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "MoviesDB",
+						"referenceName": "MoviesDb",
 						"type": "DatasetReference"
 					},
-					"name": "MoviesDB"
+					"name": "MoviesDb"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "MovieSink",
+						"type": "DatasetReference"
+					},
+					"name": "Sink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FilterYears"
+				},
+				{
+					"name": "AggregateComedyRatings"
+				}
+			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
+				"source(output(",
+				"          movie as string,",
+				"          title as string,",
+				"          genres as string,",
+				"          year as string,",
+				"          Rating as string,",
+				"          {Rotton Tomato} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> MoviesDB"
+				"     ignoreNoFilesFound: false) ~> MoviesDb",
+				"MoviesDb filter(toInteger(year) >= 1910 && toInteger(year) <= 2000 && rlike(genres, 'Comedy')) ~> FilterYears",
+				"FilterYears aggregate(groupBy(year),",
+				"     AverageComedyRating = avg(toInteger(Rating))) ~> AggregateComedyRatings",
+				"AggregateComedyRatings sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> Sink"
 			]
 		}
 	}
